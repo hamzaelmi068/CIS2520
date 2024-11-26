@@ -45,6 +45,6 @@ https://courselink.uoguelph.ca/d2l/le/content/911255/viewContent/3980006/View
 
 ## Implementation
 Is the assignment complete? If not, mention what part of the assignment is missing or incomplete. 
-## Yes, I intend on completing it.
+## Yes, i completed it.
 
 
