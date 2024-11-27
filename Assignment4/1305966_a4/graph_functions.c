@@ -26,7 +26,9 @@ void prompt(void)
  */
 Graph *readGraph(const char *filename)
 {
+    // opening the file in r mode
     FILE *file = fopen(filename, "r");
+    // null check
     if (file == NULL)
     {
         fprintf(stderr, "Error: Could not open file %s\n", filename);
@@ -93,12 +95,16 @@ Graph *readGraph(const char *filename)
  */
 Node *createNode(int vertex)
 {
+    // dynamically allocating memory for the new node
     Node *newNode = (Node *)malloc(sizeof(Node));
+    // null check for the new node
     if (newNode == NULL)
     {
         printf("error, cant allocate");
     }
+    // initializing new nodes vertex
     newNode->vertex = vertex;
+    // initialize new nodes next pointer
     newNode->next = NULL;
     return newNode;
 }
@@ -109,16 +115,19 @@ Node *createNode(int vertex)
  */
 void displayAdjacencyList(Graph *graph)
 {
+    // iterating through each vertex in the graph
     for (int i = 0; i < graph->numVertices; i++)
     {
         Node *temp = graph->adjList[i];
         printf("Vertex %d: ", i + 1);
+        // going through the adjacency list of the current vertex
         while (temp)
         {
+            // print connected vertex and weight of the edge
             printf(" -> %d (%d)", temp->vertex + 1, graph->adjMatrix[i][temp->vertex]);
-            temp = temp->next;
+            temp = temp->next; // move on to next node
         }
-        printf(" NULL\n");
+        printf(" NULL\n"); // end of the list, we put null
     }
 }
 
@@ -128,15 +137,19 @@ void displayAdjacencyList(Graph *graph)
  */
 void createAdjacencyList(Graph *graph)
 {
+    // iterate through each vertex in the graph
     for (int i = 0; i < graph->numVertices; i++)
     {
-        graph->adjList[i] = NULL;
-        Node *last = NULL; // Pointer to keep track of the last node in the list
+        graph->adjList[i] = NULL; // initializing adjanecy list for current vertex
+        Node *last = NULL;        // Pointer to keep track of the last node in the list
+        // iterating through adjacnecy row for current vertex
         for (int j = 0; j < graph->numVertices; j++)
         {
+            // if theres an edge between vertex i and vertex j
             if (graph->adjMatrix[i][j] != 0)
             {
-                Node *newNode = createNode(j);
+                Node *newNode = createNode(j); // create new node
+                // if the list is empty, set the new node head
                 if (graph->adjList[i] == NULL)
                 {
                     graph->adjList[i] = newNode;
@@ -216,25 +229,28 @@ void bfs(Graph *graph, int startVertex)
     initializeQueue(&queue);
 
     int discovered[MAX_VERTICES] = {0};
+    // marking the start vertex
     discovered[startVertex] = 1;
-
+    // adding the start vertex
     enqueue(&queue, startVertex);
-
+    // while the queue isnt empty
     while (!isEmpty(&queue))
     {
+        // dequeue the current vertex
         int currentVertex = dequeue(&queue);
         printf("%d ", currentVertex + 1);
-
+        // traversing the adjacency list of current vertex
         Node *temp = graph->adjList[currentVertex];
         while (temp)
         {
             int adjVertex = temp->vertex;
+            // If the adjacent vertex has not been discovered
             if (!discovered[adjVertex])
             {
-                discovered[adjVertex] = 1;
-                enqueue(&queue, adjVertex);
+                discovered[adjVertex] = 1;  // marking it as found
+                enqueue(&queue, adjVertex); // adding the vertex if its found
             }
-            temp = temp->next;
+            temp = temp->next; // moving onto the  next node in the list
         }
     }
     printf("\n");
@@ -285,32 +301,35 @@ int pop(Stack *stack)
  */
 void dfs(Graph *graph, int startVertex)
 {
+    // Array to keep track of visited vertices
     bool visited[MAX_VERTICES] = {false};
+    // Stack to manage the vertices for DFS
     int stack[MAX_VERTICES];
     int top = -1;
-
+    // Push the start vertex onto the stack
     stack[++top] = startVertex;
-
+    // searching until the stack is empty
     while (top != -1)
     {
         int currentVertex = stack[top--];
+        // If the current vertex has not been visited
         if (!visited[currentVertex])
         {
             printf("%d ", currentVertex + 1);
-            visited[currentVertex] = true;
+            visited[currentVertex] = true; // Mark the current vertex as visited
         }
 
         // pushing neihgbors onto stack in reverse order
         Node *temp = graph->adjList[currentVertex];
         int neighbors[MAX_VERTICES];
         int count = 0;
-
+        // Collect all neighbors of the current vertex
         while (temp)
         {
             neighbors[count++] = temp->vertex;
             temp = temp->next;
         }
-
+        // pushing neighbors onto stack in reverse order
         for (int i = count - 1; i >= 0; i--)
         {
             if (!visited[neighbors[i]])
